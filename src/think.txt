@@ -1,0 +1,20 @@
+
+===============Lombok==========================================
+@RequiredArgsConstructor
+초기화 되지않은 final 필드, @NonNull이 붙은 필드에 대해 생성자를 생성한다.
+즉 의존성 주입을 하기위해서 사용하는듯.
+
+@Getter @Setter
+이 어노테이션이 붙은 필드에는 자동적으로 getXXX(), setXXX()를 생성해준다.
+
+@NoArgsConstructor
+파라미터가 없는 기본 생성자 생성
+
+@AllArgsConstructor
+모든 필드값을 파라미터로 받는 생성자를 생성
+
+@ToString
+toString()메소드 자동생성
+
+@Data
+@Getter @Setter @RequiredArgsConstructor @ToString @EqualsAndHashCode 를 자동생성해준다
