@@ -107,3 +107,13 @@ SELECT * FROM <table_name>
 
 쿼리문에는 큰따옴표보다 작은 따옴표를 사용하는것이 혹여나 다른 Db와의 혼란을 줄일수있다.
 "mario's pizza" = 'mario\'s pizza';
+
+CRUD
+--> CREATE, READ, UPDATE, DELETE
+DB에서 대개 기본적으로 지원하는 기능
+SELECT (Column_name) FROM (TABLE_name)  2개이상의 Column을 조회할수도있음 , 으로 구분하는듯
+SELECT 은 기본적으로 조회하고싶은 Column명을 적어주고, FROM으로 조회할 TABLE을 선택한다음 WHERE로 정보를 추려서 가져온다.
+
+WHERE
+--> WHERE은 일종의 조건문과 같다.
+ex) SELECT * FROM cats WHERE age>4; == cats 테이블에서 모든Column을 조회하는데, 그중 age값이 4보다 큰값만 조회
