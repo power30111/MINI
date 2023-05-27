@@ -38,6 +38,7 @@ ex) Find All Users Who Are 18 Or Older (모든 유저들중 나이가 18이거�
 Table?
 --> 데이터베이스(관계형)는 여러개의 테이블로 이루어져있다. 테이블은 데이터를 담고있으며,
 데이터의 형태와 형식을 설명하고 그 형식을 따른 데이터들을 수집하여 보관한다.
+Table에는 Field(Columns),Type(data_type), Null(값이 Null일수있는지),Key,Default(기본값)등을 설정할수있다.
 ex) 고양이의 데이터베이스가 있어야한다고 치자. 그렇다면 이름, 종, 나이를 넣는다고 하였을때
 각 테이블 Columns의 제목(Headers)는 각각 Name, Breed, Age 이다. 그 이후 각 행(Rows)에 맞춰서
 데이터가 들어가게된다. 이때 같은 행에 위치한 데이터들은 하나의 연관된 데이터라고 볼수있다.(엑셀마냥)
@@ -47,6 +48,11 @@ Data Type?
 데이터의 일관성을 부여하여 예상외의 예외를 줄일수있다. 또한 최대 문자수를 지정해줄수있다.
 
 mysql주석은 --로 표현할수있다.
+
+Primary Key?
+--> unique identifier (고유 식별자) 로서 테이블에서 고유한 값을 가지게 하여
+모든 column에 해당하는 값이 동일하더라도 primary key를 활용하여 구별할수있다.
+기본적으로 Not null 속성을 포함하며, 중복될수없고, AUTO_INCREMENT 속성을 추가하여 기본적으로 1씩 추가하게끔 만들수있다.
 
 SELECT * FROM **
 --> *은 전체를 의미한다. **에서 전체를 조회한다.
@@ -74,8 +80,9 @@ CREATE TABLE <tablename>
 새 테이블을 만들려면 테이블 이름과 데이터타입, column명을 명시해야줘야한다.
 ex) CREATE TABLE cats
         (
-            name VARCHAR(100),
-            age INT
+            name VARCHAR(100) not Null default 'unnamed',   #name 에는 100글자까지 들어갈수있고 null일수없으며 기본값이있다.
+            age INT                                         #age 에는 글자수 제한이 없고 null일수있으며 기본값이 없다.
+            cat_id int not null PRIMARY key AUTO_INCREMENT  #cat_id 는 고유식별자이고, 자동적으로 1씩 증가한다.
         );
 
 SHOW TABLES
@@ -97,3 +104,6 @@ ex) INSERT INTO <table_name>(column_name1, coulmn_name2) VALUES ('data',data);
 
 SELECT * FROM <table_name>
 --> <table_name>에 있는 데이터들을 전부 조회
+
+쿼리문에는 큰따옴표보다 작은 따옴표를 사용하는것이 혹여나 다른 Db와의 혼란을 줄일수있다.
+"mario's pizza" = 'mario\'s pizza';
