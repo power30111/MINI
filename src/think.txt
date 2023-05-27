@@ -18,3 +18,82 @@ toString()메소드 자동생성
 
 @Data
 @Getter @Setter @RequiredArgsConstructor @ToString @EqualsAndHashCode 를 자동생성해준다
+
+=================DB============================================
+DataBase?
+-> 데이터의 집합. ex) 전화번호부 [이름]-[전화번호]
+-> 현재는 접근 가능한 인터페이스를 가지고있으면서 컴퓨터화되어있는 데이터의 구조화된 집합
+
+DBMS, RDBMS?
+--> DMS는 DataBase Management System(DB관리 시스템)
+--> RDBMS 은 관계형 데이터베이스 관리 시스템인듯?
+ex) PostgreSQL, MySQL, Oracle DB, SQLite들은 기본적으론 데이터베이스 관리 시스템이다.
+
+SQL? MySQL?
+--> SQL은 데이터베이스 데이터에 접근할때 사용하는 언어 = 구조화된 쿼리 언어
+ex) Find All Users Who Are 18 Or Older (모든 유저들중 나이가 18이거나 더많은사람을 찾아라)
+    = SELECT * FROM Users WHERE Age  >= 18; (SQL로 보낸 같은 의미를 가진 명령문)
+--> MySQL은 SQL을 구현하는 DB 관리 시스템
+
+Table?
+--> 데이터베이스(관계형)는 여러개의 테이블로 이루어져있다. 테이블은 데이터를 담고있으며,
+데이터의 형태와 형식을 설명하고 그 형식을 따른 데이터들을 수집하여 보관한다.
+ex) 고양이의 데이터베이스가 있어야한다고 치자. 그렇다면 이름, 종, 나이를 넣는다고 하였을때
+각 테이블 Columns의 제목(Headers)는 각각 Name, Breed, Age 이다. 그 이후 각 행(Rows)에 맞춰서
+데이터가 들어가게된다. 이때 같은 행에 위치한 데이터들은 하나의 연관된 데이터라고 볼수있다.(엑셀마냥)
+
+Data Type?
+--> 테이블에는 각각의 Columns에 들어가게될 데이터형식을 지정해야만 한다. int, String(VarChar), char 등등..
+데이터의 일관성을 부여하여 예상외의 예외를 줄일수있다. 또한 최대 문자수를 지정해줄수있다.
+
+mysql주석은 --로 표현할수있다.
+
+SELECT * FROM **
+--> *은 전체를 의미한다. **에서 전체를 조회한다.
+
+ORDER BY #
+--> #의 값 기준으로 오름차순 정렬
+
+ORDER BY DESC #
+--> #의 값 기준으로 내림차순 정렬
+
+DROP TABLE #
+--> #이라는 테이블 삭제
+
+USE <database name>
+--> 이 데이터베이스를 사용
+
+SELECT database()
+--> 현재 사용하는 데이터베이스
+
+CREATE TABLE <tablename>
+--> (
+        column_name data_type,
+        column_name data_type
+    );
+새 테이블을 만들려면 테이블 이름과 데이터타입, column명을 명시해야줘야한다.
+ex) CREATE TABLE cats
+        (
+            name VARCHAR(100),
+            age INT
+        );
+
+SHOW TABLES
+--> 현재 위치한 데이터베이스에서 존재하는 테이블확인
+
+SHOW COLUMNS FROM <table_name>
+--> <table_name>에 정의되어있는 columns 정보 확인
+DESCRIBE <table_name>이나 DESC <table_name> 또한 동일한 쿼리문이다.
+
+DROP TABLE <table_name>
+--> <table_name>이란 이름의 TABLE을 삭제한다. ##주의해서 사용해야한다. 테이블에 많은 정보를 담고있었을경우 되돌릴수없다.
+
+INSERT
+--> INSERT 키워드를 사용하여 데이터를 삽입할수있다.
+ex) INSERT INTO <table_name>(column_name1, coulmn_name2) VALUES ('data',data);
+이때 column_name1에 들어갈 내용이 'data' 이고 column_name2 에 들어갈 내용이 data이다.
+각 선언한 순서대로 넣어지게된다는점을 유의해야한다(데이터형식과 원치않는 내용이 들어가는것을 방지하기위해서)
+다중삽입 VALUES ('data',data),('data',data), ... 이런식
+
+SELECT * FROM <table_name>
+--> <table_name>에 있는 데이터들을 전부 조회
