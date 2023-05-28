@@ -111,9 +111,24 @@ SELECT * FROM <table_name>
 CRUD
 --> CREATE, READ, UPDATE, DELETE
 DB에서 대개 기본적으로 지원하는 기능
-SELECT (Column_name) FROM (TABLE_name)  2개이상의 Column을 조회할수도있음 , 으로 구분하는듯
+
+SELECT  (READ)
+--> SELECT (Column_name) FROM (TABLE_name)  2개이상의 Column을 조회할수도있음 , 으로 구분하는듯
 SELECT 은 기본적으로 조회하고싶은 Column명을 적어주고, FROM으로 조회할 TABLE을 선택한다음 WHERE로 정보를 추려서 가져온다.
+
+Update  (UPDATE)
+--> UPDATE (TABLE_name) SET (변경할 column과 Row명)  WHERE(조건)
+ex) UPDATE cats SET breed='shortHair' WHERE breed='Tabby' -> cats 테이블에서 breed가 Tabby인걸 shortHair로 바꾼다.
+
+Delete  (DELETE)
+--> DELETE FROM (TABLE_name) WHERE (조건);
+ex) DELETE FROM cats WHERE name='Egg'; -> cats테이블에서 name='Egg'인 것을 삭제
+#주의 DELETE FROM (TABLE)을 하면 TABLE 전체가 삭제되므로 주의해야한다.
 
 WHERE
 --> WHERE은 일종의 조건문과 같다.
 ex) SELECT * FROM cats WHERE age>4; == cats 테이블에서 모든Column을 조회하는데, 그중 age값이 4보다 큰값만 조회
+
+AS
+--> Column 명을 해당쿼리문에 한하여 변경할수있다.
+ex) SELECT cat_id as id, name FROM cats; -> cat_id라는 column이 id로 출력된다.
