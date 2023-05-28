@@ -54,6 +54,10 @@ Primary Key?
 모든 column에 해당하는 값이 동일하더라도 primary key를 활용하여 구별할수있다.
 기본적으로 Not null 속성을 포함하며, 중복될수없고, AUTO_INCREMENT 속성을 추가하여 기본적으로 1씩 추가하게끔 만들수있다.
 
+STRING FUNCTION?
+SQL에서 실행할수있는 간단한 함수인듯(엑셀처럼)
+CONCAT, SUBSTRING, REPLACE, REVERSE, CHAR_LENGTH, UPPER, LOWER 등등..
+
 SELECT * FROM **
 --> *은 전체를 의미한다. **에서 전체를 조회한다.
 
@@ -132,3 +136,27 @@ ex) SELECT * FROM cats WHERE age>4; == cats 테이블에서 모든Column을 조�
 AS
 --> Column 명을 해당쿼리문에 한하여 변경할수있다.
 ex) SELECT cat_id as id, name FROM cats; -> cat_id라는 column이 id로 출력된다.
+
+#문자열 함수를 사용할때에 Function()에서 ()를 띄어쓰기 하면 예외가 터지므로, 꼭 붙여서 사용하자
+문자열 함수 예시
+SELECT CONCAT(SUBSTRING(title,1,10),'...')as short_title FROM books;
+SELECT CONCAT_WS('.',SUBSTR(author_fname,1,1),SUBSTR(author_lname,1,1)) as Initial From books;
+
+CONCAT
+--> 문자열을 결합,연결하는 함수.
+ex) SELECT CONCAT('My','S','QL'); -> 'MYSQL'
+ex) SELECT CONCAT(author_fname,author_lname) FROM books; ->fname+lname로 반환된 문자열 조회
+#단 중간에 NULL값이 있다면 NULL이 반환되고, 숫자를 넣어도 문자열로 반환된다. CONCAT(f+l)로 column명이 나오는데
+as 써서바꿀수있음
+
+CONCAT_WS
+--> CONCAT과 비슷하지만 첫번쨰 인자값에 넣은값들이 문자들이 연결되는 사이에 들어가게된다.
+ex) SELECT CONCAT_WS(' - ', title, name) FROM books -> title - name 이런식으로 나옴
+
+SUBSTRING
+--> 문자열중 일부분을 반환    SUBSTRING(문자열,시작인덱스,시작인덱스부터 몇개까지 반환할건지)
+ex) SELECT SUBSTRING('abcdefg',3); -> cdefg
+ex) SELECT SUBSTRING('abcdefg',FROM 3) -> cdefg
+ex) SELECT SUBSTRING('abcdefg',3,2) ->cd
+#MYSQL은 인덱스번호가 1번부터 시작한다는점을 주의하자, 또한 인자값에 음수도 가능하다.
+#SUBSTR() 또한 같은 의미.
