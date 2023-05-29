@@ -160,3 +160,52 @@ ex) SELECT SUBSTRING('abcdefg',FROM 3) -> cdefg
 ex) SELECT SUBSTRING('abcdefg',3,2) ->cd
 #MYSQL은 인덱스번호가 1번부터 시작한다는점을 주의하자, 또한 인자값에 음수도 가능하다.
 #SUBSTR() 또한 같은 의미.
+
+REPLACE
+--> 문자열 일부분을 변환
+SELECT REPLACE (문자열,From_str,to_str) 문자열에서 From_str이라는 문자열이 to_str로 변환된다.
+ex) SELECT REPLACE('Hello World','Hell','OuO') -> OuOo World
+ex) SELECT REPLACE(title, ' ','-') FROM books;
+
+REVERSE
+--> 문자열을 반대로 반환
+SELECT REVERSE('abc') -> cba
+SELECT concat(author_fname, REVERSE(author_fname))as Test FROM books;
+
+CHAR_LENGTH
+--> 문자열의 길이 반환
+ex) SELECT CHAR_LENGTH('Hello World') -> 11
+
+LENGTH
+--> 문자열의 Byte 길이반환
+
+UPPER, LOWER
+--> 문자열을 대문자로 바꾸거나 소문자로 변경
+ex) SELECT UPPER('Hello World') -> HELLO WORLD
+ex) SELECT LOWER('Hello Wrold') -> hello world
+UCASE,LCASE 또한 같은 함수
+
+INSERT
+--> 문자열에 문자열을 삽입하는 함수   INSERT(str,pos,len,newstr)
+ex) SELECT INSERT('Quadratic',3,4,'What') -> 'Quwhattic'
+? 이정도면 거의 REPLACE이지만, 위치(pos)를 지정한뒤 그로부터 임의의 길이까지(len)을 전부
+새로운 문자열로(newstr)로 대체한다는점에서 다르다.
+
+LEFT, RIGHT
+--> 문자열에서 왼쪽(오른쪽)에서 임의의 거리만큼 떨어져있는 문자를 반환
+ex) SELECT LEFT('football',5) -> b
+ex) SELECT RIGHT('basketball',5) -> t
+
+REPEAT
+--> 특정 문자열을 반복한것을 반환
+ex) SELECT REPEAT('a',3) -> aaa
+
+trim
+--> 선행 및 후행 공백 제거
+ex) SELECT TRIM('       hi       '); -> hi          (인자가없을경우 공백제거)
+ex) SELECT TRIM(LEADING '.' FROM ''.....san antonio...') -> san antonio...  (선행 제거)
+ex) SELECT TRiM(BOTH 'x' FROM 'xxxbarxxx') -> bar   (선행,후행 제거)
+ex) SELECT TRIM(TRAILING 'x' FROM 'xxxbarxxx') -> xxxbar (후행 제거)
+#단 단순 trim은 중간에 있는 공백은 제거하지않는다.
+
+
