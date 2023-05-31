@@ -208,4 +208,31 @@ ex) SELECT TRiM(BOTH 'x' FROM 'xxxbarxxx') -> bar   (선행,후행 제거)
 ex) SELECT TRIM(TRAILING 'x' FROM 'xxxbarxxx') -> xxxbar (후행 제거)
 #단 단순 trim은 중간에 있는 공백은 제거하지않는다.
 
+DISTINCT
+--> 중복이 제거된 결과를 반환
+ex) SELECT DISTINCT realsed_year from books
+ex) SELECT DISTINCT CONCAT(author_fname,' ',author_lname) from books;
+ex) SELECT DISTINCT author_fname, author_lname, released_year from books
+-> 선택한 column중에서 모두 동일한 결과가 있을경우 제거
 
+ORDER BY
+--> 정렬 [1.기본적으로 우상향,
+DESC 속성을 덧붙일경우 역순
+ex) SELECT title, author_fname,author_lname FROM books ORDER BY 2;
+-> author_fname을 기준으로 정렬(2번쨰 column)
+ex) SELECT author_fname, author_lname from books ORDER BY author_fname,author_lname;
+-> author_fname을 기준으로 먼저 정렬한뒤, author_lname을 기준으로 정렬
+
+LIMIT
+--> 결과값의 개수를 제한할수있다.
+ex) SELECT * FROM books LIMIT 5 -> 결과값이 상위 5개만 출력된다.
+ex) SELECT book_id, title, released_year FROM books ORDER BY released_year
+    DESC LIMIT 1,6;             -> 상위 1번째부터 6개  출력
+
+LIKE
+--> 정확히 일치하는 것만이 아닌 특정부분을 포함하는경우에도 결과에 포함
+ex) SELECT title, author_fname, author_lname FROM books WHERE author_fname='David';
+        -> 정확히 author_fname이 'David' 인 결과만 출력
+    SELECT title, author_fname, author_lname, FROM books WHERE author_fname LIKE '%da%'
+        -> author_fname에 da가 포함될경우 출력
+'%a%' 일치하는 부분을 찾고싶을떄  '____' -> 4의 길이를 가진 결과를 보고싶을떄
