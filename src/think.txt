@@ -270,9 +270,28 @@ eX) SELECT MIN(author_lname) FROM books;
     -> 알파벳 순서로 가장 작은 값을 출력
 
 SubQuery    (하위쿼리)
-
+--> 쿼리문안에 ()로 구분한 쿼리문을 통해 비교적 복잡한 CRUD 를 수행할수있다
 ex) SELECT * FROM Books WHERE pages = (SELECT MIN(pages) FROM books);
     -> pages가 가장 적은 데이터를 찾아서 그 데이터의 전체coulmns과 값을 반환
     만일 조건이 같은 값이 있다면 그 값또한 반환
 
+SUM
+--> 특정 Columns에 있는값들을 다 더하여 반환 (int)
+ex) SELECT author_lname, SUM(pages) FROM books GROUP BY author_lname;
+    -> author_lname을 기준으로 그룹을 만든뒤, 그 그룹별로 pages의 값들을 더하여 반환
+만일 int형이 아닌경우 0으로 합산하여 반환한다.
 
+AVG
+--> 특정 Coulmns에 있는 값들의 평균을 반환 (int)
+ex) SELECT AVG(released_year) FROM books;
+    -> released_year의 평균을 반환.
+
+
+생각해봐야 하는 쿼리문의 경우.
+1) 각 작가의 첫번째 책 발매연도를 알고싶어
+SELECT author_fname, author_lname, MIN(released_year) FROM books GROUP BY author_fname, author_lname;
+    -> author_fname, author_lname을 기준으로 그룹을 나눠서 그중 released_year이 가장 낮은 것을 반환
+
+2) 가장 제목이 긴 책을 출간한 작가의 성+이름을 출력
+SELECT CONCAT(author_fname,' ',author_lname) AS author FROM books
+WHERE char_length(title) = (SELECT MAX(char_length(title)) FROM books) GROUP BY author;
