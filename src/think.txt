@@ -359,12 +359,30 @@ DataType (데이터타입)
 Dates & Times (날짜 또는 시간)
 --> DATE는 날짜를 입력할수있는 형식을 의미한다. 대개 생년월일, 생일, 세계 수달의 날 등등..
     ex) YYYY-MM-DD
-
 --> TIME은 시간을 입력할수있는 형식을 의미한다. 대개 알람, 몇 시간이 걸렷는지, 얼마나 지낫는지 등등.
     ex) HH:MM:SS
-
 --> DATETIME 은 DATE와 TIME을 합한 형식을 의미한다.
     ex) YYYY-MM-DD HH:MM:SS
+
+CURDATE CURTIME NOW
+--> CURDATE = 현재날짜 CURTIME = 현재시간 NOW = CURDATE + CURTIME
+ex) SELECT CURTIME(); -> 현재 시간이 형식에 맞춰서 반환.
+ex) SELECT CURDATE(); -> 현재 날짜가 형식에 맞춰서 반환
+ex) SELECT NOW()      -> CURTIME + CURDATE 가 DATETIME 형식에 맞춰서 반환
+
+여러가지 쓸만한 날짜(요일)관련 함수
+1) DAY(columns) => 일자만 출력 ex) 2000-11-11 -> 11;
+2) DAYOFWEEK(columns) => 이 일자가 몇요일인지 숫자로 출력 ex) 2000-11-11 -> 7 [0 = 일요일 ~ 7 = 토요일]
+3) DAYOFYEAR(columns) => 이 일자가 1년중 며칠째인지 출력 ex) 2000-11-11 -> 316 [1년 365(366)일 중에 316일째]
+4) MONTHNAME(columns) => 해당하는 달이 어느달인지 출력 ex) 2000-11-11 -> November
+5) WEEK(columns) => 해당하는 주가 몇번째 주인지 출력
+등 외에도 많은 관련함수들이 있다.
+
+여러가지 쓸만한 시간관련 함수
+1) HOUR(columns) => 해당하는 시간만 출력
+2) MINUTES() => 해당하는 분만 출력
+3) SECOND() => 해당하는 초만 출력
+
 
 생각해봐야 하는 쿼리문의 경우.
 1) 각 작가의 첫번째 책 발매연도를 알고싶어
