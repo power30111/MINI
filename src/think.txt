@@ -333,6 +333,38 @@ AVG
 ex) SELECT AVG(released_year) FROM books;
     -> released_year의 평균을 반환.
 
+DataType (데이터타입)
+1) CHAR, VARCHAR 의 차이점??
+    -공식문서에서도 두 개의 데이터타입은 비슷하지만, 저장과 회수하는 방법에 차이가있다고 적혀있다.
+    -VARCHAR는 데이터의 최대 크기를 정하여 사용하지만, CHAR는 데이터의 크기를 정하고 사용한다.(만약 크기보다 적은 크기의 데이터가 입력된다면 공백을 넣어서 크기를 맞춘다)
+    ex) 만일 CHAR(10)인데 데이터가 test만 들어왔다면, test______ 처럼 뒤에 공백을 추가한다.
+    그러나 실제 CHAR 길이가 늘어날수록, VARCHAR가 저장공간을 더 많이 잡아먹는다. 예를들면 CHAR(4) 일경우 어떤 데이터여도 4Bytes 이지만
+    VARCHAR의 경우 '_' = 1Byte '__' = 3Bytes '____' = 5Bytes 이다.
+    - 그렇다면 CHAR는 고정된 길이의 문자에서 유용한데 어디에 사용하는것이 좋을까? ex) 나라 약자(kr,jp,CN) 또는 우편번호 또는 Y/N
+    단순하게 고정된 크기를 받는다면 CHAR 사용하고, 아니면 VARCHAR를 사용하자.
+
+2) INT, TINYINT, BIGINT = 정수
+    -단순하게 각각의 타입은 저장할수있는 크기가 다르다. TINYINT = 1Bytes (-128~127), INT = 4Bytes (Int 최대 그거 ㅇㅇ), BIGINT = 8Bytes
+    -만약 unsigend int 로 사용하고싶다면 (Columns INT UNSIGEND); 로 선언해주면된다.
+    -정수 데이터타입에 실수를 넣는다면 ROUND()가 적용되서 들어간다. ex) 1.5 -> 2
+
+3) DECIMAL, FLOAT, DOUBLE = 10진수?
+    - 컴퓨터가 소수를 저장하는것은 많은 자원이 소모되므로, 여러 타입으로 구분한다. DECIMAL의 경우 정확한 10진수를 입력할수있다.
+    - DECIMAL(5,2) 이면 5는 할당하고자 하는 숫자의 총데이터크기이고, 2는 소수점 자릿수를 나타낸다. (단 소수점 자리까지 포함한 총 데이터크기이다)
+    ex) DECIMAL(5,2) -> 999.99 가 최대이다.
+    - float, double의 경우 DECIMAL보다는 비용이 적게들면서 용량은 크다. 다만 정확도는 떨어진다.
+    - float = 4 bytes, 소수점 7자리수까지. double = 8 bytes, 소수점 15자리수까지. 각 소수점을 넘어가게 되면 정확도가 떨어지게된다.
+    만약 정확도가 별로 중요하지않거나 속도가 가장 중요할경우 double로도 충분히 다 할수있다. 정말 정확도가 중요하다면 DECIMAL or BIGINT
+
+Dates & Times (날짜 또는 시간)
+--> DATE는 날짜를 입력할수있는 형식을 의미한다. 대개 생년월일, 생일, 세계 수달의 날 등등..
+    ex) YYYY-MM-DD
+
+--> TIME은 시간을 입력할수있는 형식을 의미한다. 대개 알람, 몇 시간이 걸렷는지, 얼마나 지낫는지 등등.
+    ex) HH:MM:SS
+
+--> DATETIME 은 DATE와 TIME을 합한 형식을 의미한다.
+    ex) YYYY-MM-DD HH:MM:SS
 
 생각해봐야 하는 쿼리문의 경우.
 1) 각 작가의 첫번째 책 발매연도를 알고싶어
@@ -342,3 +374,4 @@ SELECT author_fname, author_lname, MIN(released_year) FROM books GROUP BY author
 2) 가장 제목이 긴 책을 출간한 작가의 성+이름을 출력
 SELECT CONCAT(author_fname,' ',author_lname) AS author FROM books
 WHERE char_length(title) = (SELECT MAX(char_length(title)) FROM books) GROUP BY author;
+
