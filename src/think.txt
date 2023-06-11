@@ -283,6 +283,7 @@ ex) SELECT title, author_fname, author_lname FROM books WHERE author_fname='Davi
     SELECT title, author_fname, author_lname, FROM books WHERE author_fname LIKE '%da%'
         -> author_fname에 da가 포함될경우 출력
 '%a%' 일치하는 부분을 찾고싶을떄  '____' -> 4의 길이를 가진 결과를 보고싶을떄
+'da%' 라면 da로 시작하는 조건.   '%da%' 라면 da가 문자열 중간에 있는 조건.
 
 COUNT
 --> 가져오는 행의 개수를 알고싶을때
@@ -363,6 +364,11 @@ Dates & Times (날짜 또는 시간)
     ex) HH:MM:SS
 --> DATETIME 은 DATE와 TIME을 합한 형식을 의미한다.
     ex) YYYY-MM-DD HH:MM:SS
+--> DB의 Table에서 새로운 Column들을 시간관련해서 넣어줄수있다.
+    1.  created_at TIMESTAMP default CURRENT_TIMESTAMP
+        =이 쿼리는 해당 행이 만들어 질때 이 Column의 TIMESTAMP가 기록된다.
+    2.  upeate_at TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        =이 쿼리는 주어진 행에 대해서 변경이 실행될때 이 Columns의 TIMESTAMP가 (기록)변경된다.
 
 CURDATE CURTIME NOW
 --> CURDATE = 현재날짜 CURTIME = 현재시간 NOW = CURDATE + CURTIME
@@ -376,13 +382,79 @@ ex) SELECT NOW()      -> CURTIME + CURDATE 가 DATETIME 형식에 맞춰서 반�
 3) DAYOFYEAR(columns) => 이 일자가 1년중 며칠째인지 출력 ex) 2000-11-11 -> 316 [1년 365(366)일 중에 316일째]
 4) MONTHNAME(columns) => 해당하는 달이 어느달인지 출력 ex) 2000-11-11 -> November
 5) WEEK(columns) => 해당하는 주가 몇번째 주인지 출력
-등 외에도 많은 관련함수들이 있다.
+6) DATEDIFF(ex1,ex2) => ex1이 ex2 로부터 날짜가 얼마나 차이나는지 출력
+7) DATEADD(date, INTERVAL x time) => date의 날짜로부터 time단위의 x시간만큼 뒤가 언제인지 날짜로 출력
+    ex) 2022-10-05, INTERVAL 1 YEAR -> 2023-10-05   (time에는 year,month등. 날짜관련)
 
 여러가지 쓸만한 시간관련 함수
 1) HOUR(columns) => 해당하는 시간만 출력
 2) MINUTES() => 해당하는 분만 출력
 3) SECOND() => 해당하는 초만 출력
 
+여러가지 시간관련 Formatting -> 검색
+
+Comparision Operators(비교 연산자), Logical Operators(논리 연산자)
+
+1) Not Equal ( != )
+    ex) SELECT title FROM books WHERE title != "DB Study";
+        -> title이 'DB Study' 가 아닌 모든 책들에 대한 title을 출력
+
+2) Not Like
+    ex) SELECT title FROM books WHERE title Not Like '% %';
+        -> title에 공백이 포함되지않은 title들을 출력
+
+3) Greater Then ( > )
+    ex) SELECT * FROM books WHERE released_year > 2005;
+        -> released_year이 2005 를 넘는 데이터들만 출력.
+만일 NULL이 조건에 있을경우 NULL 반환
+
+4)  Less Then ( < )
+    ex) SELECT * FROM books WHERE released_year < 2005;
+        -> released_year이 2005 를 넘지 않는 데이터들만 출력
+
+5) AND ( && )
+    ex) SELECT * FROM books WHERE author_lname = 'Eggers' AND released_year > 2010;
+        -> author_lname이 'Eggers' 이면서 released_year이 2010을 넘는 데이터 출력
+
+6) OR ( || )
+    알고있으므로 패스
+
+7) BETWEEN
+    만일 2004년도 보다 늦게 발매되었고 2015년도보다 빠르게 발매된 책들의 정보를 찾고싶다면
+    ex) SELECT title FROM books WHERE released_year >= 2004 AND released_year <= 2015;
+        -> AND 연산자를 사용하여 찾을수도있지만. Between을 사용한다면 더 단순하게 표현할수있다.
+    ex) SELECT title FROM books WHERE released_year BETWEEN 2004 AND 2015;
+NOT 연산자도 포함할수있다
+
+8) Date Comparing
+    CAST() 를사용해서 할수있다..
+
+9) IN
+    특정 문자열이 포함되는 데이터들을 찾아서 반환해준다.
+    ex) SELECT title FROM books WHERE author_lname IN ('doraemon','jingu','bisil');
+        -> 특정 문자열이 author_lname 으로 있는 결과값들을 반환
+NOT 연산자도 포함할수있다.
+
+10) MODULO ( % )
+    나머지 연산자.
+    ex) SELECT 2000 % 2 ;
+        -> 나머지가 0이므로 0반환
+
+11) CASE
+    ex) SELECT title, released_year,
+            CASE
+                WHEN released_year >= 2000 THEN 'Modern Lit'
+                ELSE '20th Century Lit'
+            END AS GENRE
+        FROM books;
+    -> released_year 이 2000보다 크거나 같으면 'Modern Lit'. 아니면 '20th Century Lit'.
+        cASE는 END로서 마무리할수있고, AS GENRE를 사용함으로서 출력되는 Column명을 GENRE로 변경하였다.
+
+12) IS NULL
+    해당 데이터가 NULL 인지 아닌지
+    ex) SELECT * FROM books WHERE title = NULL
+        -> title 이 NULL 인 데이터만 출력
+NOT 연산자 포함가능
 
 생각해봐야 하는 쿼리문의 경우.
 1) 각 작가의 첫번째 책 발매연도를 알고싶어
