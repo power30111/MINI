@@ -456,6 +456,53 @@ NOT 연산자도 포함할수있다.
         -> title 이 NULL 인 데이터만 출력
 NOT 연산자 포함가능
 
+Constraints (제약)
+기본적으로 Table생성시 Column 속성으로 넣는 제약조건.
+1) UNIQUE
+    -> UNIQEU속성을 넣을시 그 Column은 고유성(중복불가) 속성을 가지게된다.
+
+2) CHECK( 조건 )
+    -> CHECK속성을 넣을시 그 Column은 조건검사를 한뒤 조건검사값이 TRUE일경우 데이터추가를 허용한다.
+        ex) age INT CHECK (age > 19) = age에 들어가는 값이 19보다 커야만 한다.
+
+3) NAMED
+Named Constraints (사용자 지정 제약조건) 은 CHECK ()를 사용할시 어떤 조건에 의해서 문제가 발생하였는지를 모르기때문에
+따로 검사하는 이름을 정해줘서 예외발생시 알기쉽게 하기위함.
+    -> CONSTRAINT age_over_19 CHECK (age > 19) 라고 Table생성시 포함하여 넣게되면, 데이터 삽입시
+    age값을 참고하여 CHECK ( age > 19 ) 를 검사하게되고, 만일 문제가 있을경우age_over_19 라고 예외가 반환된다.
+
+4) Mulit-Column Checks
+단순히 Named Constraints를 여러 Column에 적용시킬수 있다.
+    -> CONSTRAINT name_address UNIQUE (name, address) = name 과 address Column에 UNIQUE속성을 적용시키고,
+    만일 예외가 발생시 name_address 명이 리턴되어 알기쉽게 나타낼수있다.
+
+ALTER TABLE
+TABLE을 추가,변경하고싶을경우.
+
+1) Add Column (Column 추가)
+    ex) ALTER TABLE companies ADD COLUMN city VARCHAR(25); -> companies라는 TABLE에서 city라는 COlumn을 추가
+
+2) Drop Column (Column 삭제)
+    ex) ALTER TABLE companies DROP COLUMN city; -> companies라는 TABLE에서 city라는 Column을 삭제
+
+3) Renamed (Table, Column명 변경)
+    ex) RENAME TABLE companies TO Cp
+        -> companies라는 TABLE에서 Cp라는 이름으로 변경
+    ex) ALTER TABLE companies RENAME COLUMN name TO biz_name
+        -> companies라는 TABLE에서 name이라는 COLUMN 명을 biz_name으로 변경
+
+4) Modify (Column 속성 수정)
+    ex) ALTER TABLE companies MODIFY biz_name VARCHAR(100);
+        -> biz_name Column의 VARHCAR속성을 VARCHAR(100)으로 변경
+
+5) Change (Column 이름과 속성 수정)
+    ex) ALTER TABLE companies CHANGE business biz_name VAHRCHAR(50);
+        -> companies라는 TABLE 명을 business로 변경한뒤, biz_name VARCHAR(50) Column을 생성.
+
+6) ADD(DROP) Constraints (제약 추가)
+    ex) ALTER TALBE a ADD CONSTRAINT b CHECK (조건);  -> 제약조건 추가
+    ex) ALTER TABLE a DROP CONSTRAINT b;    -> 제약조건 삭제
+
 생각해봐야 하는 쿼리문의 경우.
 1) 각 작가의 첫번째 책 발매연도를 알고싶어
 SELECT author_fname, author_lname, MIN(released_year) FROM books GROUP BY author_fname, author_lname;
