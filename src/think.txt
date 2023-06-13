@@ -503,6 +503,83 @@ TABLE을 추가,변경하고싶을경우.
     ex) ALTER TALBE a ADD CONSTRAINT b CHECK (조건);  -> 제약조건 추가
     ex) ALTER TABLE a DROP CONSTRAINT b;    -> 제약조건 삭제
 
+Relationship DB ( 서로 영향을 주고받는 관계가 있는 Table들을 만들수있다..이젠..)
+현실에서는 서로 영향을 주고 받는 데이터들이 많다. ex) SNS라고 한다면 좋아요, 댓글, Id등등
+보통 3가지 관계성을 가지고있는데
+1. one to One (1 대 1)
+    1 ㄷ 1 관계 생성 예시
+    CREATE TABLE customers (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        first_name VARCHAR(50),
+        last_name VARCHAR(50),
+        email VARCHAR(50)
+    );
+
+    CREATE TABLE orders (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        order_date DATE,
+        amount DECIMAL(8,2),
+        customer_id INT,
+        FOREIGN KEY (customer_id) REFERENCES customers(id)
+    );
+    -> customer_id 는 참조할 customers Table의 id와 데이터형식이 같아야한다. (INT)
+    -> FOREIGN KEY (customer_id)를 선언함으로서 외래 키 를 설정해주었고,REFERENCES customer(id)를 통해
+    -> customers이 가지고있는 id값중에 하나여야만 한다는 조건(검증)을 해줄수있다.
+    -> 만일 customers에 존재하지않는 id를 orders.customer_id 에 넣는다면 예외가 발생함.
+
+그럼 데이터 참조는 어떤식으로 할수있을까?
+- SELECT Query 를 두번 작성하여 찾기.    ( CROSS JOIN )
+    ex)SELECT id FROM customers WHERE last_name = 'George';
+      SELECT * FROM orders WHERE customer_id = 1;
+    또는 SELECT * FROM orders WHERE customer_id = (SELECT id FROM customers WHERE last_name = 'George');
+
+- ( INNER JOIN )    Table 간 순서 상관 X 겹쳐있는 부분이 있을경우 참조가능
+    ex)
+        SELECT * FROM customers
+       	    JOIN orders
+       		    ON customers.id = orders.customer_id;
+    -customers Table 이 orders 테이블과 합치는데, ON ( 조건 ) 이 맞는경우에만 SELECT 문 반환.
+
+- ( LEFT JOIN )     하나의 테이블을 검색하는데, 겹치는 부분이 있는 다른테이블이 있을경우 참조. 없을경우 NULL
+    ex)
+        SELECT first_name, last_name, order_date, amount
+            FROM customers
+                LEFT JOIN orders
+                    ON orders.customer_id = customers.id;
+    [이해를 돕기위한 비교 데이터]
+    - INNER JOIN 의 경우
+    Boy	George	2016-02-10	99.99
+    Boy	George	2017-11-11	35.50
+    George	Michael	2014-12-12	800.67
+    George	Michael	2015-01-03	12.50
+    Bette	Davis	1999-04-11	450.25
+    - LEFT JOIN 의 경우
+    Boy	    George	2016-02-10	99.99
+    Boy	    George	2017-11-11	35.50
+    George	Michael	2014-12-12	800.67
+    George	Michael	2015-01-03	12.50
+    David	Bowie   NULL        NULL
+    Blue	Steele  NULL        NULL
+    Bette	Davis	1999-04-11	450.25
+
+    INNER JOIN은 orders 테이블과 customers 테이블 간 ON(조건)이 맞는 경우
+    LEFT JOIN은 기준 테이블인 customers를 일단 전부 반환하되, 만일 참조 Table인 orders에도 겹치는 부분이 있을경우 참조가능 없음 NULL
+    LEFT JOIN은 어떨때 사용할까? -> 주문이 없는 고객은 있을수있지만, 고객이 없는 주문은 있을 수 없으므로 이런부분 체크할때 사용할듯
+
+- ( RIGHT JOIN ) ..? LEFT랑 머가 다르지
+
+2. one to Many (1 대 다)
+3. Many to Many (다 대 다)
+로 표현한다.
+-> PRIMARY KEY 고유 키 (스키마를 정의할때 이 키워드를 설정할수있다 ex) Column 속성으로 넣기)
+-> FOREIGN KEY 외래 키 (다른곳에서 특정 Table을 참조할때 사용하는 KEY) 참조할 고유 키와 동일한 속성이여야한다.ex) INT -> INT
+
+여러 참조가 되어있는(FOREIGN KEY 를 통해 연결되어있는 테이블의경우) 특정 행을 삭제할때 어떻게 해야할까?
+단순 DELETE를 통한 삭제는 행을 삭제했을경우 FOREIGN KEY에 위반되는 것이 있을경우 예외를 반환한다.
+방법은 여러가지가 있는데, 그중 외래 키 생성시 ON DELETE CASCADE 속성을 달아주는것이다. 이럴경우 해당 키를 가진 참조값이 삭제된다면
+외래 키와 연결되어있는 모든 행을 삭제한다.
+    ex) FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE;
+
 생각해봐야 하는 쿼리문의 경우.
 1) 각 작가의 첫번째 책 발매연도를 알고싶어
 SELECT author_fname, author_lname, MIN(released_year) FROM books GROUP BY author_fname, author_lname;
@@ -512,3 +589,19 @@ SELECT author_fname, author_lname, MIN(released_year) FROM books GROUP BY author
 SELECT CONCAT(author_fname,' ',author_lname) AS author FROM books
 WHERE char_length(title) = (SELECT MAX(char_length(title)) FROM books) GROUP BY author;
 
+3) 각 사람별로 시킨 가격의 총합하여 가격순으로 정렬
+- INNER JOIN
+SELECT first_name, last_name, SUM(amount)as total FROM customers
+	JOIN orders
+		ON customers.id = orders.customer_id
+			GROUP BY first_name, last_name
+				ORDER BY total;
+
+- LEFT JOIN
+SELECT
+    first_name,last_name,IFNULL(SUM(amount), 0) AS money_spent
+        FROM customers
+            LEFT JOIN orders
+                ON customers.id = orders.customer_id
+                    GROUP BY first_name , last_name;
+IFNULL(1,2)은 1번인자에 값을 넣고 만일 1번 값이 NULL일경우 2번값을 반환하도록 하는 함수
