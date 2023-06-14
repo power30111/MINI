@@ -570,7 +570,8 @@ Relationship DB ( 서로 영향을 주고받는 관계가 있는 Table들을 만
 
 2. one to Many (1 대 다)
 3. Many to Many (다 대 다)
-로 표현한다.
+
+
 -> PRIMARY KEY 고유 키 (스키마를 정의할때 이 키워드를 설정할수있다 ex) Column 속성으로 넣기)
 -> FOREIGN KEY 외래 키 (다른곳에서 특정 Table을 참조할때 사용하는 KEY) 참조할 고유 키와 동일한 속성이여야한다.ex) INT -> INT
 
@@ -605,3 +606,46 @@ SELECT
                 ON customers.id = orders.customer_id
                     GROUP BY first_name , last_name;
 IFNULL(1,2)은 1번인자에 값을 넣고 만일 1번 값이 NULL일경우 2번값을 반환하도록 하는 함수
+
+4) series테이블의 title의 평점을 reviews테이블에서 가져와서 평점의 평균을 낮은순서대로 정렬
+
+SELECT title, ROUND(AVG(rating),2) as avg_rating FROM series
+	JOIN reviews
+		ON series.id = reviews.series_id
+			GROUP BY title
+				ORDER BY AVG(rating);
+
+5) review가 없는 시리즈의 제목을 출력
+SELECT title as unreview_series FROM series
+    LEFT JOIN reviews
+        ON series.id = reviews.series_id
+            WHERE rating IS NULL;
+-> LEFT JOIN 은 series를 일단 나열하고, 그중 reviews에 겹치는 부분(ON series.id = reviews.series_id) 에 해당하는
+    부분이 있을경우 데이터에 넣고, 없을경우 NULL 반환한다. 그러므로 rating 부분의 값이 NULL 일경우 아무도 평가를 매기지
+    않았다는 뜻이므로 review가 없는 title값이 출력된다.
+
+6) 각 장르별 평균 평점
+SELECT genre,AVG(rating) as avg_rating FROM series
+    JOIN reviews ON series.id = reviews.series_id
+        GROUP BY genre;
+
+7) CASE, LEFT JOIN, GROUP BY 등을 사용하여 원하는 데이터형식으로 데이터 뽑아내기
+
+SELECT first_name,last_name,COUNT(rating) as COUNT,IFNULL(MIN(rating),0) as MIN,
+IFNULL(MAX(rating),0) as MAX,IFNULL(AVG(rating),0) as AVG,
+CASE
+	WHEN COUNT(rating) > 0 THEN 'ACTIVE'
+    ELSE 'INACTIVE'
+END AS STATUS
+FROM reviewers
+	LEFT JOIN reviews
+		ON reviewers.id = reviews.reviewer_id
+			GROUP BY first_name,last_name;
+
+8) 3개의 테이블을 JOIN하여 원하는 데이터형식 출력
+SELECT title, rating, CONCAT(first_name,' ',last_name) as reviewer FROM series
+	JOIN reviews
+		ON reviews.series_id = series.id
+	JOIN reviewers
+        ON reviews.reviewer_id = reviewers.id
+	ORDER BY title;
