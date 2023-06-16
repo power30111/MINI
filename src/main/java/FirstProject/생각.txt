@@ -1,0 +1,4 @@
+User가 필요한데, 어떤부분이 필요하지?
+
+이름,나이,아이디,비번 정도.
+id,name,age,user_id,password

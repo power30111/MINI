@@ -1,3 +1,38 @@
+===============JPA=============================================
+@Entity
+    -> JPA가 사용하는 객체라는 뜻을 의미, 이 어노테이션이 없을경우 JPA가 인식하지못한다.
+
+@Id
+    -> 테이블의 Primary Key와 매핑하는 용도
+
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+    -> PK 생성값을 DB에서 생성하는 방식을 사용한다고 명시.
+
+@Column(name = "Column명",length = 길이 )
+    -> 객체의 필드를 테이블의 Column과 매핑한다. 만일 @Column 이 생략되어있을경우 객체의 필드를 테이블의 Column과 매핑한다.
+    만일 스프링부트와 통합해서 사용할경우 itemName -> item_name으로 알잘딱 변환해준다.
+
+private final EntityManager em;
+    -> JPA는 실제 사용시 EntityManager 의존관계 주입을 받아야한다.
+    원래는 EntityManager 설정을 여러부분해야하지만, Springboot사용시 그런부분은 알아서 해주므로 주입받아서 사용만하면 된다.
+
+EntityManager를 가지고 어떤 메서드로 사용할까?
+1) persist
+    ->@Entity 선언한 객체를 가지고 InsertQuery를 만들어준다. 즉 간단한 insert문은 이걸로 해결가능하다.
+
+2) find
+    -> ex) User user = em.find(User.class,id) 으로 객체명과 P.K를 통해 User를 조회할수있다.
+           return user;
+
+3) update
+    -> ex) User findUser = em.find(User.class,id);
+           findUser.setAge(변경할 나이);
+           findUser.setName(변경할 이름);
+    이런식으로 하면 알아서 update Query를 ...날려준다.. @Transcation이 commit되는 시점에.
+
+
+만일 조회를 여러개 해야할경우 JPQL? 이란것을 사용할수있다.
+
 ===============Spring==========================================
 
 @RestController
@@ -307,6 +342,16 @@ ex) SELECT author_lname COUNT(*) FROM books GROUP BY author_lname;
 ex) SELECT CONCAT(author_fname,' ',author_lname) AS author , COUNT(*) FROM books GROUP BY author;
     -> fname과 lname을 합친 걸 기준으로 GROUP을 나눠서 각각의 그룹화된 테이블의 개수를 세서반환
 
+GROUP BY(Having)
+--> GROUP BY 에서 어떤 그룹을 결과에 포함할지를 정해줄수있다.(WHERE)
+ex) SELECT title, AVG(rating) FROM full_review GROUP BY title HAVING COUNT(rating) >1;
+    -> title로 그룹들을 만든뒤, 그 그룹중 rating이 1이상인것들만 결과에 반영
+
+GROUP BY(ROLL UP)
+--> GROUP BY 한 그룹들의 평균?
+ex) SELECT released_year, AVG(rating) FROM review GROUP BY released_year WITH ROLLUP;
+    -> 결과의 마지막에 전체 rating의 평균값을 출력. 즉 AVG,SUM 이런 계산하는 함수에 대해서 전체에 대한 함수를 실행해주는듯?
+
 MIN MAX
 --> 특정 데이터들의 MIN, MAX값을 반환
 그룹화를 안하고 할경우
@@ -580,6 +625,24 @@ Relationship DB ( 서로 영향을 주고받는 관계가 있는 Table들을 만
 방법은 여러가지가 있는데, 그중 외래 키 생성시 ON DELETE CASCADE 속성을 달아주는것이다. 이럴경우 해당 키를 가진 참조값이 삭제된다면
 외래 키와 연결되어있는 모든 행을 삭제한다.
     ex) FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE;
+
+
+View란?
+    -> 일종의 사용자정의 가상테이블을 생성한다.
+    ex) CREATE VIEW full_reviews AS
+    SELECT title, released_year, genre, rating, first_name, last_name FROM reviews
+    JOIN series ON series.id = reviews.series_id
+    JOIN reviewers ON reviewers.id = reviews.reviewer_id;
+    = full_reviews라는 가상의 테이블이 생성되고,Column 이나 Row 정보는 SELECT 한것을 기준으로 가져간다.
+
+View Update?
+    -> 일반 Table처럼 삭제를 할려고 할떄에 DELETE 를 사용하면 에러가 발생한다.
+
+View Replace?
+    -> ex) CREATE OR REPLACE VIEW view_test AS
+            SELETE * FROM series ORDER BY released_year DESC;
+    = CREATE OR REPLACE (없으면 만들고, 있을경우 변경)
+
 
 생각해봐야 하는 쿼리문의 경우.
 1) 각 작가의 첫번째 책 발매연도를 알고싶어
