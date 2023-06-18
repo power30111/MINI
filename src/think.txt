@@ -643,6 +643,11 @@ View Replace?
             SELETE * FROM series ORDER BY released_year DESC;
     = CREATE OR REPLACE (없으면 만들고, 있을경우 변경)
 
+Window Function?
+
+
+
+
 
 생각해봐야 하는 쿼리문의 경우.
 1) 각 작가의 첫번째 책 발매연도를 알고싶어
