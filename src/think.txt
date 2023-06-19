@@ -644,9 +644,41 @@ View Replace?
     = CREATE OR REPLACE (없으면 만들고, 있을경우 변경)
 
 Window Function?
+ GROUP BY 와 아주 비슷하다.단, Window function은 모든행에 대한 결과값을 추가한다.
+ex) SELECT emp_no, department, salary, AVG(salary) OVER(PARTITION BY department)
+    AS dept_avg FROM emps;
+    -> emp_no   department          salary  dept_avg
+       20       customer_service    56000   55500.0000
+       21       customer_service    55000   55500.0000
+       18       sales               59000   59500.0000
+       12       sales               60000   59500.0000
+    당장은 의미불명일수있으나, 아마도 AVG(salary) OVER(PARTITION BY department)의 뜻은
+    department를 기준으로 일종의 그룹을 나눈뒤 월급을 기준으로 평균을 내라 라는 의미로 생각된다.
+    SELECT department, AVG(salary) FROM emps GROUP BY department; 의 결과와 유사하다.
+    단 GROUP BY 의 경우 하나의 행으로 압축?해버리는데 반해 Window Function은 각각의 개별행이
+    남아있다. 둘다 필요에따라 나눠쓰면될듯
 
-
-
+Window Function
+1) OVER()
+모든행에 특정한 행을 추가하는 함수인듯. AVG,MAX,MIN,SUM 등등 여러 집계함수를 사용할수있다.
+ex) SELECT emp_no,department, salary, AVG(salary) OVER() FROM employees;
+    -> group by 를 하지않았기 떄문에 각 Column(emp_no, department, salary)와 행들이 출력되고,
+    거기에 더하여 AVG(salary)를 계산한 행이 추가되어 결과가 나온다.
+    emp_no  department  salary  AVG(salary) OVER()
+    	1	engineering	80000	68428.5714
+    	2	engineering	69000	68428.5714
+    	3	engineering	70000	68428.5714
+OVER()에는 인자로 넣을수있는 PARTITION BY 가 있다.
+ex) AVG(salary) OVER(PARTITION BY department) FROM employees;
+    -> 각 행에 대해서 AVG(salary)를 추가하긴하는데,여기에 department를 기준으로 그룹을 나눈뒤 AVG(salary)
+    를 한 값을 각 해당하는 department에 추가하여 결과로 반환한다.
+    이 부분은 위에 맨처음 WINDOW FUNCTION을 설명할때 사용한
+     -> emp_no   department          salary  dept_avg
+           20       customer_service    56000   55500.0000
+           21       customer_service    55000   55500.0000
+           18       sales               59000   59500.0000
+           12       sales               60000   59500.0000
+           과 유사한 값이 나오게된다. 각 department에 맞게끔 평균을 낸 값이 그 row에 추가
 
 
 생각해봐야 하는 쿼리문의 경우.
