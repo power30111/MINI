@@ -30,10 +30,18 @@ EntityManager를 가지고 어떤 메서드로 사용할까?
            findUser.setName(변경할 이름);
     이런식으로 하면 알아서 update Query를 ...날려준다.. @Transcation이 commit되는 시점에.
 
-
 만일 조회를 여러개 해야할경우 JPQL? 이란것을 사용할수있다.
 
+Entity 설계시 주의점
+1) Entity에는 가급적 @Setter를 사용하지말자. 이후 실무에서 변경포인트가 너무많아서 유지보수가 어려울수있다.
+2) 모든 연관관계는 지연로딩으로 설정하자.즉시로딩(EAGER)을 예측이 어렵고, 어떤 SQL이 실행될지 추척하기 어렵다.
+특히 JPQL실행시 N+1문제가 자주발생한다. 실무에서 모든 연관관계는 (LAZY)로 설정하고, 만일 연관된 엔티티를
+DB에서 함께 조회해야 할경우 fetch Join 또는 Entity 그래프 기능을 사용한다.
+3) @OneToOne , @ManyToOne 처럼 N -> 1 로 가는 관계는 기본적으로 즉시로딩(EAGER)로 설정되어있으므로,
+수동으로 LAZY 설정을 해줘야한다. ex) @ManyToOne(fetch = FetchType.LAZY)
+1 -> N 은 LAZY가 기본이다.
 ===============Spring==========================================
+
 
 @RestController
     -> RestController는 반환 값으로 View를 찾는게 아니라, HTTP 메세지 바디에 바로 입력한뒤 리턴한다.
@@ -80,6 +88,12 @@ PathVariable(경로변수)
 만약 1) 방식이라면 HttpServletRequest의 request.getParameter()를 사용하면 다음 두가지 요청 파라미터를 조회할수있다.
 ex) /request-param?username=hello&age=20 라는 파라미터로 쿼리 파라미터를 전송했다고 하자.
 
+Controller에서 사용하는 Model?
+Model = View단에서 사용하는 데이터를 넘길때 사용하는 객체.
+ex) model.addAttribute("객체명","객체데이터") Map과 유사한 데이터형식으로 넘길수있다.
+
+@Transactional 이 Test단에서 실행될경우, 일반적으로 테스트가 끝난뒤 Rollback을 한다.
+만일 원치않는다면 @Rollback(false)로 하면된다.
 
 ===============Lombok==========================================
 @RequiredArgsConstructor
