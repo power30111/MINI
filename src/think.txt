@@ -42,7 +42,11 @@ DB에서 함께 조회해야 할경우 fetch Join 또는 Entity 그래프 기능
 1 -> N 은 LAZY가 기본이다.
 4) 컬렉션은 필드에서 초기화 하자. (NUll 문제에서 안전, 하이버네이트에서 엔티티를 영속화할때 문제가생길수도있다.)
 ===============Spring==========================================
+@Repository @Service
+ComponentScan의 대상이 되어서 자동으로 Bean 등록이 된다. 부가적인 기능들이 있긴하다
 
+@Autowired
+SpringBean에 의존성 주입을 위해 사용.
 
 @RestController
     -> RestController는 반환 값으로 View를 찾는게 아니라, HTTP 메세지 바디에 바로 입력한뒤 리턴한다.
@@ -53,6 +57,14 @@ DB에서 함께 조회해야 할경우 fetch Join 또는 Entity 그래프 기능
     대부분의 속성을 배열로 제공하므로 다중설정이 가능하다 ex) ("주소1","주소2")
     메서드 적용할시 ex) @RequestMapping(value="주소",method = RequestMapping.GET) -> GET방식으로 오는것만 메서드실행
     만일 속성을 넣지않았을경우 HTTP 메서드와 무관하게 모두 호출된다 (GET, HEAD, POST, PUT, PATCH, DELETE)
+
+@Transactional
+기본적으로 데이터변경을 하는부분에서는 Transactional이 필요하다. 단 이 어노테이션은 두가지 제공방식이 있는데,
+하나는 Spring 이고 하나는 javax에서 제공하는 것이다. 물론 Spring을 사용하고있는 입장에서는 Spring에서 제공하는것을
+사용하는것을 권장.
+
+@SpringBootTest
+Spring을 실행시킨 상태로 테스트를 진행하고싶다면 사용하는 어노테이션. 만일 제공하지않을경우 @Autowired 이 실패한다.
 
 PathVariable(경로변수)
     -> 리소스 경로에 식별자를 넣는 방법.
@@ -95,6 +107,11 @@ ex) model.addAttribute("객체명","객체데이터") Map과 유사한 데이터
 
 @Transactional 이 Test단에서 실행될경우, 일반적으로 테스트가 끝난뒤 Rollback을 한다.
 만일 원치않는다면 @Rollback(false)로 하면된다.
+
+테스트할때 외부DB를 사용하지않고, 내부에서 만든(잠시 테스트용도로)DB를 사용하고싶을경우
+Test폴더안에 resources폴더를 만든다. 이렇게 되면, Test할때에는 Test폴더안에있는 resources폴더에 있는 설정들을 적용한다.
+여기에 application.properties라는 이름의 파일을 만든뒤 인메모리 기능을 지원하는 DB에서 설정값을 변경하면된다.
+Mysql은 인메모리 기능을 지원하지않아서 관둡시다..
 
 ===============Lombok==========================================
 @RequiredArgsConstructor
@@ -764,3 +781,21 @@ SELECT title, rating, CONCAT(first_name,' ',last_name) as reviewer FROM series
 	JOIN reviewers
         ON reviews.reviewer_id = reviewers.id
 	ORDER BY title;
+
+
+############################## 에러 목록 ################################
+1)
+org.springframework.beans.factory.BeanDefinitionStoreException: Failed to parse configuration class [jpabook.jpashop.JpashopApplication]
+
+-> 현재 Jpashop에서 같은 이름의 클래스가 존재한다.
+더 아래줄에서 나온 에러를 읽어보자.
+Caused by: org.springframework.context.annotation.ConflictingBeanDefinitionException: Annotation-specified bean name 'memberRepository' for bean class [jpabook.jpashop.repository.MemberRepository] conflicts with existing, non-compatible bean definition of same name and class [jpabook.jpashop.MemberRepository]
+걍 단순하게 MemberRepository라는 이름으로 등록된 Bean이 두개나 있다고 한다.. 친절하게 어디경로인지도 알려준다. 잘확인해보자.
+
+2)
+java.lang.NullPointerException: Cannot invoke "jakarta.persistence.EntityManager.createQuery(String, java.lang.Class)" because "this.em" is null
+
+-> 현재 "jakarta.persistence.EntityManager.createQuery(String, java.lang.Class)" 를 호출할수가없는데, 왜나면 em값이 Null이기 떄문이다..
+em? 은 지금 EntityManager의 필드명인데..? 그렇다면 EntityManager가 제대로 호출이 되지않았거나, Bean등록이 되지않았다는 뜻이다.
+확인해보니 Lombok에서 제공하는 @RequiredArgsConstructor 를 사용하려하는데, 이 어노테이션은 final을 선언한 필드에만 적용된다.
+final을 넣고나니 오류가 해결되었다.
