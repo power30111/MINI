@@ -25,4 +25,27 @@ public class OrderItem {
     
     private int orderPrice; //상품가격
     private int count;  //주문 수량
+
+    //==비즈니스 로직==//
+
+    public void cancel(){
+        getItem().addStock(count);
+        //주문취소이므로, 재고수량을 원래대로 돌려놓는다.
+    }
+
+    public int getTotalPrice() {
+        return getOrderPrice() * getCount();
+    }
+
+    //==생성 메서드==//
+    public static OrderItem createOrderItem(Item item, int orderPrice, int count){
+        OrderItem orderItem = new OrderItem();
+        orderItem.setItem(item);
+        orderItem.setOrderPrice(orderPrice);
+        orderItem.setCount(count);
+
+        //주문이 들어온 만큼 재고수량에서 제거
+        item.removeStock(count);
+        return orderItem;
+    }
 }
