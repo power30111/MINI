@@ -799,3 +799,10 @@ java.lang.NullPointerException: Cannot invoke "jakarta.persistence.EntityManager
 em? 은 지금 EntityManager의 필드명인데..? 그렇다면 EntityManager가 제대로 호출이 되지않았거나, Bean등록이 되지않았다는 뜻이다.
 확인해보니 Lombok에서 제공하는 @RequiredArgsConstructor 를 사용하려하는데, 이 어노테이션은 final을 선언한 필드에만 적용된다.
 final을 넣고나니 오류가 해결되었다.
+
+3)
+org.springframework.dao.InvalidDataAccessApiUsageException: id to load is required for loading
+
+-> id 값이 제대로 불러오도록 준비되지않아서 생기는에러..
+따로 설정해주지않는이상.. 여러 엔티티를 포함하는 엔티티를 persist하기 위해서는 미리 그에 속하는 Entity를 persist해줘야한다.
+이거 하기싫으면 CASCADE옵션을 따로 넣어준다거나.

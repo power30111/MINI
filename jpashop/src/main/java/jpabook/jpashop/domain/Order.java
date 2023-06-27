@@ -2,7 +2,9 @@ package jpabook.jpashop.domain;
 
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -13,6 +15,7 @@ import java.util.List;
 @Table(name = "orders")
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  //protected 생성자 생성. 직접생성하는것을 방지 + 생성메서드 강제.
 public class Order {
 
     @Id @GeneratedValue
@@ -73,7 +76,6 @@ public class Order {
     }
 
     //==비즈니스 로직==//
-
     public void cancel(){
         if (delivery.getStatus() == DeliveryStatus.COMP){
             throw new IllegalStateException("이미 배송완료된 상품은 취소가 불가능합니다.");
@@ -83,7 +85,6 @@ public class Order {
             orderItem.cancel();
         }
     }
-
 
     //==조회 로직==//
     /**
