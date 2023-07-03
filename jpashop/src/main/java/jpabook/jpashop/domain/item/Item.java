@@ -16,11 +16,9 @@ import java.util.List;
 @Getter @Setter
 public abstract class Item {
 
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
     @Column(name = "item_id")
     private Long id;
-
 
     //아래는 공통속성 (상속관계)_
     private String name;

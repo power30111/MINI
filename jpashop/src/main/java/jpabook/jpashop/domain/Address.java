@@ -7,9 +7,9 @@ import lombok.Getter;
 @Getter
 public class Address {
 
-    private String city;
-    private String street;
-    private String zipcode;
+    private String city;        //어느 도시?
+    private String street;      //어느 거리?
+    private String zipcode;     //그건머임?
 
     protected Address(){
     }

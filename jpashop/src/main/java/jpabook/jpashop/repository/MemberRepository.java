@@ -1,10 +1,12 @@
 package jpabook.jpashop.repository;
 
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jpabook.jpashop.domain.Member;
+import jpabook.jpashop.service.ItemService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor
 public class MemberRepository {
+
     private final EntityManager em;
 
 //    @PersistenceContext         //JPA 의 EntityManager을 스프링에 주입해주기 위한 어노테이션
@@ -30,7 +33,6 @@ public class MemberRepository {
     public Member findOne(Long id){     //회원 찾기(단건 조회)
         return em.find(Member.class, id);
     }
-
     public List<Member> findAll(){  //JPQL을 사용해야한다. createQuery(JPQL,반환타입)
         return em.createQuery("select m from Member m", Member.class)
                 .getResultList();   //결과값을 List로 변환

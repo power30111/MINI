@@ -41,7 +41,6 @@ public class OrderController {
                         @RequestParam("count") int count){
 
         orderService.order(memberId, itemId, count);
-
         return "redirect:/orders";
     }
 

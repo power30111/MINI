@@ -4,6 +4,7 @@ import jpabook.jpashop.domain.item.Book;
 import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +22,7 @@ public class ItemService {
     }
 
     @Transactional
-    public void updateItem(Long itemId,  String name, int price,int stockQuantity){    //
+    public void updateItem(Long itemId,  String name, int price,int stockQuantity){
         //현재 findItem은 이미 있는객체를 가져온 영속성엔티티이다.
         //영속성 엔티티의 경우 변경감지를 하므로 Query날릴때 알아서 변경해준다. 그러므로 따로 persist를 해줄필요가없다.
 
