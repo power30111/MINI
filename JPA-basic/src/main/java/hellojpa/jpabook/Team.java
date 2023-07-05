@@ -1,10 +1,9 @@
 package hellojpa.jpabook;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Team {
@@ -12,6 +11,9 @@ public class Team {
     @Column(name = "TEAM_ID")
     private Long id;
     private String name;
+    @OneToMany(mappedBy = "team")
+    private List<MemberV2> members = new ArrayList<>();
+
 
     public Long getId() {
         return id;
@@ -27,5 +29,13 @@ public class Team {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<MemberV2> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<MemberV2> members) {
+        this.members = members;
     }
 }
