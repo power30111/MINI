@@ -1,6 +1,5 @@
 package jpabook.jpashop.domain;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +25,5 @@ public class Member {
     private List<Order> orders = new ArrayList<>();
     //(mappedBy 속성을 넣는순간 order에서 매핑된 관계라고 선언. 음.. 그니깐 일종의 읽기전용 Column?
     //이 orders에 뭘 넣는다고해서 Order Table에서 FK값이 변경되지않는다.
-
 
 }
