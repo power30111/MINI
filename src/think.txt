@@ -395,14 +395,49 @@ MEMBER객체에서 TEAM_ID가 변경되었을경우 TEAM의 TEAM_ID가 변경되
     3)서브타입 테이블로 변환 -> 구현 클래스마다 테이블 전략
 관련 주요 어노테이션
     - @Inheritance(strategy = InheritanceType.XXX)
-        1)JOINED : 조인전략
-        2)SINGLE_TABLE : 단일 테이블 전략
-        3)TABLE_PER_CLASS : 구현 클래스마다 테이블 전략
-    - @DiscriminatorColumn(name="DTYPE")
-    - @DiscriminatorValue("XXX")
+        1)JOINED : 조인전략     (간단하게 DTYPE을 통한 join을 통해 관리)
+        2)SINGLE_TABLE : 단일 테이블 전략      (간단하게 하나의 테이블에 다떄려박기)
+        3)TABLE_PER_CLASS : 구현 클래스마다 테이블 전략     (간단하게 ITEM 테이블을 없애고 Album,book,movie 를 만들기)
+    - @DiscriminatorColumn(name="DTYPE")    -> DTYPE사용유무인듯
+    - @DiscriminatorValue("XXX")            -> DTYPE 사용시 현재 테이블이 어떤DTYPE 명으로 할건지 정해줄수있음. 기본은 테이블명
 @Entity에 아무것도 하지않고 상속관계를 맺는다면 하이버네이트에서는 단일테이블전략을 사용하는것같다.
 DTYPE?
 
+조인전략
+    -장점
+        :테이블의 정규화
+        :외래 키 참조 무결성 제약조건 활용가능
+        :저장공간 효율화
+    -단점
+        :조회시 조인을 많이사용하여 성능 저하
+        :조회 쿼리가 복잡하다
+        :데이터 저장시 INSERT SQL 2번호출한다.
+
+단일 테이블 전략
+    -장점
+        :조인이 필요 없으므로 일반적으로 조회 성능이 빠르다
+        :조회 쿼리가 단순하다
+    -단점
+        :지식 엔티티가 매핑한 컬럼은 모두 null 허용
+        :단일 테이블에 모든 것을 저장하므로 테이블이 커질 수 있는 상황에 따라서 조회 성능이 오히려 나빠질수있다.
+
+구현 클래스마다 테이블 전략?
+    ->일단 결론부터 쓰지말라네요... ex) 총합 가격 조회등을 할때, 다른 column을 추가해야할때.
+    -장점
+        :서브 타입을 명확하게 구분해서 처리할 때 효과적(insert, select등)
+        :NOT NULL 제약조건 가능
+    -단점
+        :여러 자식 테이블을 함께 조회할 때 성능이 느리다(UNION SQL)..
+        :자식 테이블을 통합해서 쿼리하기 어려움
+
+@MappedSuperclass?
+->공통 매핑 정보가 필요할 때 사용한다(id,name)
+->이 어노테이션이 있으면 그 클래스에 있는 속성들을 상속받은 Entity들에게 같은 속성을 줄수있다. 약간 공통적인 부분을 깔끔하게 하기위한것인듯.
+ex)BaseEntity- Member,Team 참고
+->상속관계 매핑X, 엔티티X, 테이블과 매핑X
+-> 부모 클래스를 상속받는 자식 클래스에게 매핑 정보만 제공
+-> 조회, 검색불가(em.find(BaseEntity)불가)
+-> 직접 생성해서 사용할 일이 없으므로 추상 클래스를 권장한다.
 
 ===============Spring==========================================
 @Repository @Service
