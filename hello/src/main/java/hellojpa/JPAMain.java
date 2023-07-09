@@ -16,13 +16,17 @@ public class JPAMain {
 
         try {
 
-            Movie movie = new Movie();
-            movie.setDirector("aaaa");
-            movie.setActor("bbbb");
-            movie.setName("dasfas");
-            movie.setPrice(10000);
+            Child child1 = new Child();
+            Child child2 = new Child();
 
-            em.persist(movie);
+            Parent parent = new Parent();
+            parent.addChild(child1);
+            parent.addChild(child2);
+
+            em.persist(parent);
+            em.persist(child1);
+            em.persist(child2);
+
 
             tx.commit();
         }catch (Exception e){
