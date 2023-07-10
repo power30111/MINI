@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
-public class Member extends BaseEntity{
+public class Member{
 
     @Id @GeneratedValue
     @Column(name = "MEMBER_ID")
@@ -19,13 +19,11 @@ public class Member extends BaseEntity{
     @JoinColumn
     private Team team;
 
-//    @OneToOne
-//    @JoinColumn(name = "LOCKER_ID")
-//    private Locker locker;
+    @Embedded
+    private Period wordPeriod;
 
-//    @OneToMany(mappedBy = "member")
-//    private List<MemberProduct> memberProducts = new ArrayList<>();
-
+    @Embedded
+    private Address homeAddress;
 
     public Long getId() {
         return id;
