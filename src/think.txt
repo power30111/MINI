@@ -630,6 +630,113 @@ JPA의 데이터 타입 분류
 엔티티와 값 타입을 혼동해서 엔티티를 값 타입으로 만들면 안된다.
 식별자가 필요하고, 지속해서 값을 추적, 변경해야한다면 그것은 값 타입이 아닌 엔티티이다.
 
+페이징 API
+    :JPA는 페이징을 다음 두 API로 추상화
+    :setFirstResult(int startPosition) -> 조회 시작시 위치(0부터 시작)
+    :setMaxResult(int maxResult) -> 조회할 데이터 수
+
+ex) em.createQuery("select m from Member m order by m.age desc",Member.class)
+    .setFirstResult(0)
+    .setMaxResult(10)
+    .getResultList();
+
+조인(JOIN)
+    :내부 조인
+        -> SELECT m FROM Member m [INNER] JOIN m.team t
+        (Member와 연관있는 team을 조인할거라는 뜻)
+    :외부 조인
+        -> SELECT m FROM Member m LEFT JOIN m.team t
+         (JOIN의 default는 INNER로 JOIN문만 있을경우 INNER, LEFT는 명시해주어야한다)
+    :세타 조인
+        -> SELECT COUNT(m) FROM Member m, Team t where m.username = t.name
+    :조인 - ON 절
+        1) 조인 대상 필터링
+        ex) 회원과 팀을 조인하면서, 팀 이름이 A인 팀만 조인
+        JPQL - SELECT m.t FROM Member m LEFT JOIN m.team t on t.name='A'
+        SQL - SELECT m.*,t.* FROM
+              MEMBER m LEFT JOIN Team t ON m.TEAM_ID=t.id and t.name='A'
+
+        2) 연관관계 없는 엔티티 외부 조인
+        ex) 회원의 이름과 팀의 이름이 같은 대상 외부 조인
+        JPQL - SELECT m, t FROM
+               Member m LEFT JOIN Team t on m.username = t.name
+        SQL - SELECT m.*,t.* FROM
+                Member m LEFT JOIN Team t ON m.username = t.name
+
+서브 쿼리
+    ex)
+        :나이가 평균보다 많은 회원
+            -> select m from Member m
+                where m.age > (select avg(m2.age) from Member m2)
+        (Main쿼리와 sub쿼리가 서로 관련이없음. [Member m과 Member m2가 각각있음]
+
+    서브 쿼리 지원함수
+        : [NOT] EXISTS (subquery) = 서브쿼리에 결과가 존재하면 참
+            : {ALL | ANY | SOME} (subquery)
+            : ALL = 모두 만족하면 참
+            : ANY, SOME = 같은 의미, 조건을 하나라도 만족하면 참
+        : [NOT] IN (subquery) = 서브쿼리의 결과 중 하나라도 같은 것이 있으면 참
+    ex) 팀 A 소속인 회원
+        -> select m from Member m
+           where exists (select t from m.team t where t.name = '팀A')
+    ex) 전체 상품 각각의 재고보다 주문량이 많은 주문들
+        -> select o from Order o
+           where o.orderAmount > ALL (select p.stockAmount from Product p)
+    ex) 어떤 팀이든 팀에 소속된 회원
+        -> select m from Member m
+           where m.team = ANY (select t from Team t)
+JPA 서브 쿼리 한계
+    :JPA는 WHERE, HAVING 절에서만 서브 쿼리 사용 가능
+    :SELECT절 또한 서브쿼리 사용가능(하이버네이트 지원)
+    :FROM 절의 서브 쿼리는 현재 JPQL에서 불가능
+        ->조인으로 풀 수 있으면 풀어서 해결.
+
+JPQL 타입 표현
+    - 문자 : 'HELLO', 'She''s'
+    - 숫자 : 10L(Long), 10D(Double), 10F(Float)
+    - Boolean : TRUE, FALSE
+    - ENUM : jpabook.MemberType.Admin (패키지명 포함해서 사용해야함)
+    - 엔티티 타입 : TYPE(m) = Member (상속 관계에서 사용)
+
+조건식 - CASE 식
+    -기본 CASE 식
+        SELECT
+            case when m.age <= 10 then '학생요금'
+                 when m.age >= 60 then '경로요금'
+                 else '일반요금'
+            end
+        from Member m
+    -단순 CASE 식
+        SELECT
+            case t.name
+                when '팀A' then '인센티브110%'
+                when '팀B' then '인센티브120%'
+                else '인센티브105%'
+            end
+        from Team t
+    -COALESCE: 하나씩 조회해서 null이 아니면 반환
+        ex) select coalesce(m.username, '이름 없는 회원') FROM Member m
+    -NULLIF: 두 값이 같으면 null 반환, 다르면 첫번째 값 반환
+        ex) select NULLIF(m.username, '관리자') FROM Member m
+
+JPQL 기본 함수
+(JPA 표준 함수) - 어떤 DB든 이 함수들은 사용가능하다.
+    :CONCAT
+    :SUBSTRING
+    :TRIM
+    :LOWER, UPPER
+    :LENGTH
+    :LOCATE
+    :ABS,SQRT,MOD
+    :SIZE,INDEX
+(사용자 정의 함수 호출)
+    :하이버네이트는 사용전 방언에 추가해야 한다
+    :사용하는 DB 방언을 상속받고, 사용자 정의 함수를 등록한다.
+    ex)select function('group_concat', i.name) From Item i
+단. DB 종속적으로 구현해놓은 함수들이 구현되어있는게 많이 있네요. 보고 안되면 그때 봐도될듯
+
+
+
 ===============Spring==========================================
 @Repository @Service
 ComponentScan의 대상이 되어서 자동으로 Bean 등록이 된다. 부가적인 기능들이 있긴하다
