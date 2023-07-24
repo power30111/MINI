@@ -6,6 +6,9 @@ import java.util.*;
 import java.util.ArrayList;
 
 @Entity
+@NamedQuery(
+        name = "Member.findByUsername",
+        query = "select m from Member m where m.username = :username")
 public class Member {
 
     @Id @GeneratedValue
