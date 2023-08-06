@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>회원가입과 로그인</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>환영합니다!</h1>
+    <div class="button-container">
+        <a th:href="@{/User/signup}" class="signup-button">회원가입</a>
+        <a th:href="@{/User/login}" class="login-button">로그인</a>
+    </div>
+</div>
+</body>
+</html>
+
+
