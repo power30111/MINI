@@ -1,5 +1,7 @@
 package FirstProject.MINI.repository;
 
+import FirstProject.MINI.domain.User.User;
+import FirstProject.MINI.domain.User.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

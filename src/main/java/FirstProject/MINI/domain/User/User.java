@@ -1,4 +1,4 @@
-package FirstProject.MINI.repository;
+package FirstProject.MINI.domain.User;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -10,12 +10,13 @@ import lombok.Getter;
 @Getter
 @Table(name = "USERS")
 @AllArgsConstructor
+@Builder
 public class User {
     
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String userId;
     //아이디
     @Column(nullable = false)
@@ -30,7 +31,6 @@ public class User {
         this.password = password;
         this.name = name;
     }
-
 
     public Long ChangeUserInfo(String userId,String password,String name){
         this.userId =userId;
