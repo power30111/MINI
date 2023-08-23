@@ -15,7 +15,15 @@ public class PostsApiController {
     private final PostsService postsService;
 
     @PostMapping("/api/v1/posts")
-    public Long save(@RequestBody PostsSaveRequestDto requestDto){
+    public Long save(@RequestParam("title") String title,
+                     @RequestParam("author") String author,
+                     @RequestParam("content") String content){
+
+        PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
+                .title(title)
+                .author(author)
+                .content(content)
+                .build();
         return postsService.save(requestDto);
     }
 

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>게시글 작성</title>
+</head>
+<body>
+<!-- 헤더를 포함시킴 -->
+<div th:replace="~{base-header :: header}"></div>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          게시글 작성
+        </div>
+        <div class="card-body">
+          <form th:action="@{/api/v1/posts}" method="post">
+            <div class="form-group">
+              <label for="title">제목:</label>
+              <input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력하세요" required>
+            </div>
+            <div class="form-group">
+              <label for="author">저자:</label>
+              <input type="text" class="form-control" id="author" name="author" placeholder="작성자를 입력하세요" required>
+            </div>
+
+            <div class="form-group">
+              <label for="content">내용:</label>
+              <textarea class="form-control" id="content" name="content" rows="5" placeholder="내용을 입력하세요"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" id="btn-save">작성</button>
+            <a href="/" role="button" class="btn btn-secondary">취소</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

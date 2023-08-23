@@ -2,9 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>로그인</title>
-  <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
+<div th:replace="~{base-header :: header}"></div>
 <div class="container">
   <h1>로그인</h1>
   <form th:action="@{/User/login}" method="post">
