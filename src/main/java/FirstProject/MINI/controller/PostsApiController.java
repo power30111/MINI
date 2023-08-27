@@ -6,6 +6,7 @@ import FirstProject.MINI.controller.dto.PostsSaveRequestDto;
 import FirstProject.MINI.controller.dto.PostsUpdateRequestDto;
 import FirstProject.MINI.service.posts.PostsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -19,22 +20,39 @@ public class PostsApiController {
                      @RequestParam("author") String author,
                      @RequestParam("content") String content){
 
+        PostsSaveRequestDto requestDto = getRequestDto(title, author, content);
+        return postsService.save(requestDto);
+    }
+
+    private static PostsSaveRequestDto getRequestDto(String title, String author, String content) {
         PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
                 .title(title)
                 .author(author)
                 .content(content)
                 .build();
-        return postsService.save(requestDto);
+        return requestDto;
     }
 
-    @PutMapping("/api/v1/posts/{id}")
-    public Long update(@PathVariable Long id, @RequestBody PostsUpdateRequestDto requestDto){
+    @PostMapping("/api/v1/posts/update/{id}")
+    public Long update(@PathVariable Long id,
+                       @RequestParam("title") String title,
+                       @RequestParam("content") String content){
+        PostsUpdateRequestDto requestDto = getUpdateDto(title,content);
         return postsService.update(id, requestDto);
     }
-    @GetMapping("/api/v1/posts/{id}")
-    public PostsResponseDto findById (@PathVariable Long id){
-        return postsService.findById(id);
+
+    private static PostsUpdateRequestDto getUpdateDto(String title, String content) {
+        PostsUpdateRequestDto requestDto = PostsUpdateRequestDto.builder()
+                .title(title)
+                .content(content)
+                .build();
+        return requestDto;
     }
 
+    @GetMapping("/api/v1/posts/{id}")
+    public PostsResponseDto findById (@PathVariable Long id){
+        PostsResponseDto posts = postsService.findById(id);
+        return posts;
+    }
 
 }

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>게시글 수정</title>
+</head>
+<body>
+<!-- 헤더를 포함시킴 -->
+<div th:replace="~{base-header :: header}"></div>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h2>게시글 수정</h2>
+      <form th:action="@{/api/v1/posts/update/{id} (id=${id})}" method="post" th:object="${dto}">
+        <input type="hidden" th:field="*{id}" />
+        <div class="form-group">
+          <label for="title">제목:</label>
+          <input type="text" th:field="*{title}" class="form-control" id="title" placeholder="제목을 입력하세요" required>
+        </div>
+        <div class="form-group">
+          <label for="author">저자:</label>
+          <input type="text" th:field="*{author}" class="form-control" id="author" readonly>
+        </div>
+        <div class="form-group">
+          <label for="content">내용:</label>
+          <textarea th:field="*{content}" class="form-control" id="content" rows="5" placeholder="내용을 입력하세요" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">수정</button>
+        <a th:href="@{/}" class="btn btn-secondary">취소</a>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

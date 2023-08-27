@@ -1,19 +1,45 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>회원가입과 로그인</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <title>게시글 목록</title>
 </head>
 <body>
-<div class="container">
-    <h1>환영합니다!</h1>
-    <div class="button-container">
-        <a th:href="@{/User/signup}" class="btn btn-primary">회원가입</a>
-        <a th:href="@{/User/login}" class="btn btn-secondary">로그인</a>
-        <a th:href="@{/posts/save}" class="btn btn-secondary">게시글 작성</a>
+<div th:replace="~{base-header :: header}"></div>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2>게시글 목록</h2>
+                <div>
+                    <table class ="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>게시글 번호</th>
+                            <th>제목</th>
+                            <th>작성자</th>
+                            <th>최종 수정일</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="post : ${posts}">
+                            <td th:text="${post.id}"></td>
+                            <td th:text="${post.title}"></td>
+                            <td th:text="${post.author}"></td>
+                            <td th:text="${post.modifiedDate}"></td>
+                            <td>
+                                <a th:href="@{/posts/update/{id} (id=${post.id})}" class="btn btn-primary" role="button">수정</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            <a th:href="@{/posts/save}" class="btn btn-primary">게시글 등록</a>
+        </div>
     </div>
+    <a th:href="@{/User/signup}" class="btn btn-primary">회원가입</a>
+    <a th:href="@{/User/login}" class="btn btn-secondary">로그인</a>
+    <a th:href="@{/posts/save}" class="btn btn-secondary">게시글 작성</a>
 </div>
 </body>
 </html>
-
-
