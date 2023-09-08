@@ -67,7 +67,7 @@ public class indexController {
     public @ResponseBody String info(){
         return "개인정보";
     }
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN)")
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
     @GetMapping("/data")
     public @ResponseBody String data(){
         return "개인정보";
