@@ -8,20 +8,34 @@ package security1.security.config.auth;
 // Authentication 안에는 User정보가 있어야한다.
 // User 객체의 type => UserDetails type 객체
 
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import security1.security.model.User;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
-public class PrincipalDetails implements UserDetails {
+@Data
+public class PrincipalDetails implements UserDetails, OAuth2User {
     // UserDetails을 상속받는다.
 
     private User user; //콤포지션?
 
     public PrincipalDetails(User user) {
         this.user = user;
+    }
+
+    @Override
+    public <A> A getAttribute(String name) {
+        return OAuth2User.super.getAttribute(name);
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return null;
     }
 
     //해당 User의 권한을 return 하는 메서드.
@@ -77,4 +91,8 @@ public class PrincipalDetails implements UserDetails {
     }
 
 
+    @Override
+    public String getName() {
+        return null;
+    }
 }
