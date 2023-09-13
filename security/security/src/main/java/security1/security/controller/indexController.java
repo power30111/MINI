@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,13 @@ public class indexController {
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @GetMapping("/test/login")
+    public @ResponseBody String loginTest(Authentication authentication){
+        log.info("/test/login =====================");
+        log.info("authentication :" + authentication.getPrincipal());
+        return "세션 정보 확인하기";
+    }
 
     @GetMapping({"/",""})
     public String index(){
