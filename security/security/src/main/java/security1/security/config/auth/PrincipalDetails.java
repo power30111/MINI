@@ -23,9 +23,17 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
     // UserDetails을 상속받는다.
 
     private User user; //콤포지션?
+    private Map<String,Object> attributes;
 
     public PrincipalDetails(User user) {
         this.user = user;
+        //일반 로그인할시 사용하는 생성자
+    }
+
+    public PrincipalDetails(User user, Map<String,Object> attributes){
+        this.user = user;
+        this.attributes = attributes;
+        //OAuth 로그인 할시 사용하는 생성자( attribute를 통해서 user를 만든다.)
     }
 
     @Override
@@ -35,10 +43,10 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 
     @Override
     public Map<String, Object> getAttributes() {
-        return null;
+        return attributes;
     }
 
-    //해당 User의 권한을 return 하는 메서드.
+    //해당 User의 권한을 return 하는 메서드.!!!
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collect = new ArrayList<>();
@@ -89,7 +97,6 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 
         return true;
     }
-
 
     @Override
     public String getName() {
