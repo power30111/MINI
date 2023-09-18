@@ -34,8 +34,20 @@ spring:
               - profile
 
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 57185885041-b41pq525unvcupp24jess0knsg5ugb5g.apps.googleusercontent.com
+            client-secret: GOCSPX-yQ1jXOiTRGqRpFyaLLsgkixAYMp
+            scope:
+              - email
+              - profile
+
 logging:
   level:
     org:
       springframework:
         security=DEBUG:
+
